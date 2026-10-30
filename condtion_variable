@@ -1,0 +1,67 @@
+Let's understand Condition Variables in C++ with a simple example.
+
+A condition variable is used when one thread needs to wait until another thread performs some operation.
+
+Unlike a mutex, it avoids busy waiting.
+1. Real-life example
+Imagine two threads:
+- Thread 1 (Consumer): Wants to consume data but the data is not available.
+- Thread 2 (Producer): Produces the data.
+Without a condition variable, Thread 1 might continuously check whether data is available.
+
+With a condition variable:
+1. Thread 1 acquires the lock.
+2. Checks whether data is available.
+3. If not, it goes to sleep and releases the lock.
+4. Thread 2 produces data and notifies Thread 1.
+5. Thread 1 wakes up, reacquires the lock and consumes the dat
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+using namespace std;
+
+mutex m;
+condition_variable cv;
+
+bool ready = false;
+
+void consumer() {
+
+    unique_lock<mutex> lock(m);
+
+    cout << "Consumer is waiting...\n";
+
+    cv.wait(lock, [] {
+        return ready;
+    });
+
+    cout << "Consumer received the signal!\n";
+    cout << "Processing data...\n";
+}
+
+void producer() {
+
+    this_thread::sleep_for(chrono::seconds(2));
+
+    {
+        lock_guard<mutex> lock(m);
+
+        ready = true;
+
+        cout << "Producer produced data\n";
+    }
+
+    cv.notify_one();
+}
+
+int main() {
+
+    thread t1(consumer);
+    thread t2(producer);
+
+    t1.join();
+    t2.join();
+
+    return 0;
+}
