@@ -1,0 +1,16 @@
+Mutex vs Condition Variable
+Mutex	Condition Variable
+Provides mutual exclusion	Allows threads to wait for a condition
+Uses lock() and unlock()	Uses wait() and notify_one()
+Prevents simultaneous access	Avoids busy waiting
+Does not itself provide notification	Works together with a mutex
+
+Important interview points:
+1. A condition variable always works with a mutex in C++.
+2. wait() releases the mutex while sleeping.
+3. After notification, the waiting thread reacquires the mutex.
+4. Always check the condition using a predicate because spurious wakeups are possible.
+5. notify_one() wakes one waiting thread; notify_all() wakes all waiting threads.
+Remember the difference:
+- Mutex: Only one thread can access the critical section at a time.
+- Condition Variable: A thread can sleep until a particular condition becomes true.
