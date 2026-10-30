@@ -27,3 +27,13 @@ int main() {
 
     cout << cnt << endl;
 }
+//mutex	Lock used for mutual exclusion
+lock()	Acquire the lock
+unlock()	Release the lock
+Critical section	Code accessing shared resources
+Contention	Multiple threads competing for a lock
+Deadlock	Threads wait indefinitely for each other
+
+Remember: If T1 has acquired the lock, T2 cannot enter the same critical section until T1 releases it.
+
+Also, if a thread terminates while holding a normal mutex without unlocking it, other threads can remain blocked indefinitely. lock_guard helps prevent this by automatically releasing the lock.
